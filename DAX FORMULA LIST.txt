@@ -1,0 +1,58 @@
+DAX FORMULA LIST:-
+
+1.Total Sale = sum(Orders[SALES])
+2.Total Profit = sum(Orders[PROFIT])
+3.YTD Sales = TOTALYTD([Total Sale],'Calendar'[Date])
+4.QTD Sales = TOTALQTD([Total Sale],Orders[ORDER_DATE])
+5.MTD Sales = TOTALMTD([Total Sale],'Calendar'[Date])
+6.Previous Month Customer = CALCULATE(COUNT(Orders[CUSTOMER_ID]),DATEADD('Calendar'[Date], -1, MONTH))
+7.Previous Month Sale = CALCULATE([Total Sale],DATEADD('Calendar'[Date], -1, MONTH))
+8.Previous Quarter Sale = CALCULATE([Total Sale],PREVIOUSQUARTER('Calendar'[Date])) 
+9.MOST_PROFITABLE REGION = FIRSTNONBLANK(
+    TOPN(1,
+    VALUES('CUSTOMER'[REGION]),
+    [Total Sale],
+    DESC
+    ),
+    1
+)
+10.Most Valuable Segment = FIRSTNONBLANK(
+    TOPN(1,
+    VALUES(CUSTOMER[SEGMENT]),
+    [Total Sale],
+    DESC
+    ),
+    1
+    )
+11.Most Profitable Sub-Category = FIRSTNONBLANK(
+    TOPN(1,
+    VALUES('PRODUCT'[SUB CATEGORY]),
+    [Total Sale],
+    DESC
+    ),
+    1
+    )
+12.Monthly Orders = DISTINCTCOUNT(Orders[ORDER_ID])
+13.Highest Selling Month = FIRSTNONBLANK(
+    TOPN(1,
+    VALUES('Calendar'[Month]),
+    [Total Sale],
+    DESC
+    ),
+    1
+    )
+14.Growth% = DIVIDE([Total Sale]-[Previous Month Sale],[Previous Month Sale],0)
+15.Growth Target = [Growth%]*1.15
+16.Category Contribution% = DIVIDE([Total Sale],CALCULATE([Total Sale],ALL('PRODUCT'[CATEGORY])))
+17.Customer target% = [MTD Customer]*1.15
+18.Customer Count = CALCULATE(DISTINCTCOUNT(Orders[CUSTOMER_ID]),ALL('Calendar'[Month]))
+19.Profit Margin Target = [Profit Margin]*1.15
+20.Revenue Target = [Total Sale]*1.15
+21.Calendar = ADDCOLUMNS(
+    CALENDAR(MIN(Orders[ORDER_DATE]),MAX(Orders[ORDER_DATE])),
+    "Year",Year([Date]),
+    "Month",FORMAT([Date],"MMM"),
+    "Month Number",MONTH([Date])
+)
+22.Revenue Achievement = DIVIDE([Total Sale],[Revenue Target],0)
+
